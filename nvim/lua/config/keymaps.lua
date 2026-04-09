@@ -22,3 +22,6 @@ map("n", "<leader>fg", function() require('telescope.builtin').live_grep() end, 
 map("n", "<leader>fw", function() require('telescope.builtin').grep_string() end, { desc = "Слово под курсором" })
 map("n", "<leader>fs", function() require('telescope.builtin').lsp_document_symbols() end, { desc = "Символы файла" })
 map("n", "<leader>fS", function() require('telescope.builtin').lsp_workspace_symbols() end, { desc = "Символы проекта" })
+
+vim.keymap.set("n", "<C-o>", "<C-o>", { desc = "Назад по jump list" })
+vim.keymap.set("n", "<C-m>", "<C-i>", { desc = "Вперёд по jump list" })

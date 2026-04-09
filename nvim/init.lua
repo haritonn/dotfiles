@@ -11,6 +11,15 @@ vim.cmd.colorscheme("catppuccin-mocha")
 -- light theme
 -- vim.cmd[[colorscheme tokyonight-day]]
 
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "qf",
+  callback = function()
+    vim.keymap.set("n", "<CR>", function()
+      local line = vim.api.nvim_win_get_cursor(0)[1]
+      vim.cmd(line .. "cc")
+    end, { buffer = true, noremap = true, nowait = true })
+  end,
+})
 
 -- useful opts
 vim.opt.nu=true

@@ -1,75 +1,64 @@
 return {
-  {
-    "williamboman/mason.nvim",
-    opts = {},
- },
+  { "williamboman/mason.nvim", build = ":MasonUpdate", config = true },
 
   {
     "williamboman/mason-lspconfig.nvim",
-    opts = {
-        ensure_installed = {
-          "lua_ls",
-          -- "scala_metals",
-          "rust_analyzer",
-          "pyright",
-          "clangd",
-          -- "gopls",
-          "ts_ls",
-        },
-    },
+    dependencies = { "mason.nvim" },
   },
-
 
   {
     "neovim/nvim-lspconfig",
-    dependencies = {
-      "williamboman/mason-lspconfig.nvim",
-      "folke/lazydev.nvim",
-    },
+    dependencies = { "mason-lspconfig.nvim", "saghen/blink.cmp" },
     config = function()
       local lspconfig = require("lspconfig")
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
+      local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-        lspconfig.lua_ls.setup({ capabilities = capabilities,
-          settings = { Lua = { diagnostics = { globals = { "vim" } } } } })
+      local on_attach = function(_, bufnr)
+        local map = function(keys, func, desc)
+          vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc })
+        end
+        map("gd",          function() vim.lsp.buf.definition() end,     "Перейти к определению")
+        map("gD",          vim.lsp.buf.declaration,    "Перейти к объявлению")
+        map("gr",          vim.lsp.buf.references,     "Найти ссылки")
+        map("gi",          vim.lsp.buf.implementation, "Реализации")
+        map("K",           vim.lsp.buf.hover,          "Документация")
+        map("<leader>rn",  vim.lsp.buf.rename,         "Переименовать")
+        map("<leader>ca",  vim.lsp.buf.code_action,    "Code actions")
+        map("<leader>f",   vim.lsp.buf.format,         "Форматировать")
+      end
 
-        lspconfig.pyright.setup({ capabilities = capabilities })
-        lspconfig.rust_analyzer.setup({ capabilities = capabilities })
-        lspconfig.clangd.setup({ capabilities = capabilities })
-        lspconfig.gopls.setup({ capabilities = capabilities })
-        lspconfig.ts_ls.setup({ capabilities = capabilities })
-      vim.api.nvim_create_autocmd("LspAttach", {
-        callback = function(event)
-          local map = function(keys, func, desc)
-            vim.keymap.set("n", keys, func, { buffer = event.buf, desc = desc })
-          end
+      require("mason-lspconfig").setup({
+        ensure_installed = { "lua_ls", "pyright", "ts_ls", "rust_analyzer" },
+        automatic_installation = true,
+      })
 
-          map("gd",        vim.lsp.buf.definition,      "Перейти к определению")
-          map("gr",        vim.lsp.buf.references,       "Список ссылок")
-          map("K",         vim.lsp.buf.hover,            "Документация")
-          map("<leader>rn",vim.lsp.buf.rename,           "Переименовать")
-          map("<leader>ca",vim.lsp.buf.code_action,      "Code actions")
-          map("<leader>d", vim.diagnostic.open_float,    "Показать ошибку")
-          map("[d",        vim.diagnostic.goto_prev,     "Предыдущая ошибка")
-          map("]d",        vim.diagnostic.goto_next,     "Следующая ошибка")
-        end,
+      -- Вместо setup_handlers — явный список серверов
+      local servers = { "pyright", "ts_ls", "rust_analyzer" }
+      for _, server in ipairs(servers) do
+        lspconfig[server].setup({
+          capabilities = capabilities,
+          on_attach = on_attach,
+        })
+      end
+
+      -- lua_ls отдельно — нужен специфичный конфиг
+      lspconfig.lua_ls.setup({
+        capabilities = capabilities,
+        on_attach = on_attach,
+        settings = {
+          Lua = {
+            diagnostics = { globals = { "vim" } },
+            workspace = { checkThirdParty = false },
+          },
+        },
       })
 
       vim.diagnostic.config({
-        signs = {
-          text = {
-            [vim.diagnostic.severity.ERROR] = "✘",
-            [vim.diagnostic.severity.WARN]  = "▲",
-            [vim.diagnostic.severity.HINT]  = "⚑",
-            [vim.diagnostic.severity.INFO]  = "»",
-          },
-        },
+        virtual_text = true,
+        signs = true,
         underline = true,
         update_in_insert = false,
-        virtual_text = {
-          spacing = 4,
-          prefix = "●",
-        },
+        float = { border = "rounded" },
       })
     end,
   },
