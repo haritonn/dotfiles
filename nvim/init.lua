@@ -1,8 +1,12 @@
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
 require("config.keymaps")
 require("config.lazy")
 
 -- dark theme
-vim.cmd[[colorscheme tokyonight]]
+-- vim.cmd[[catppuccin-mocha]]
+vim.cmd.colorscheme("catppuccin-mocha")
 
 -- light theme
 -- vim.cmd[[colorscheme tokyonight-day]]

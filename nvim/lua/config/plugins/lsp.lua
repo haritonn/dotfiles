@@ -19,11 +19,6 @@ return {
     },
   },
 
-  {
-    "folke/lazydev.nvim",
-    ft = "lua",
-    opts = {},
-  },
 
   {
     "neovim/nvim-lspconfig",
@@ -54,7 +49,7 @@ return {
           map("K",         vim.lsp.buf.hover,            "Документация")
           map("<leader>rn",vim.lsp.buf.rename,           "Переименовать")
           map("<leader>ca",vim.lsp.buf.code_action,      "Code actions")
-          map("<leader>e", vim.diagnostic.open_float,    "Показать ошибку")
+          map("<leader>d", vim.diagnostic.open_float,    "Показать ошибку")
           map("[d",        vim.diagnostic.goto_prev,     "Предыдущая ошибка")
           map("]d",        vim.diagnostic.goto_next,     "Следующая ошибка")
         end,
