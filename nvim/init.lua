@@ -1,2 +1,21 @@
--- bootstrap lazy.nvim, LazyVim and your plugins
+require("config.keymaps")
 require("config.lazy")
+
+-- dark theme
+vim.cmd[[colorscheme tokyonight]]
+
+-- light theme
+-- vim.cmd[[colorscheme tokyonight-day]]
+
+
+-- useful opts
+vim.opt.nu=true
+vim.opt.relativenumber=true
+vim.opt.cursorline=true
+vim.opt.list=true
+vim.opt.clipboard="unnamedplus"
+
+vim.opt.softtabstop=2
+vim.opt.tabstop=2
+vim.opt.expandtab=true
+vim.opt.autoindent=true
