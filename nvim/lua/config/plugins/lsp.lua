@@ -24,7 +24,7 @@ return {
         map("K",           vim.lsp.buf.hover,          "Документация")
         map("<leader>rn",  vim.lsp.buf.rename,         "Переименовать")
         map("<leader>ca",  vim.lsp.buf.code_action,    "Code actions")
-        map("<leader>f",   vim.lsp.buf.format,         "Форматировать")
+        map("<leader>lf",  vim.lsp.buf.format,         "Форматировать")
       end
 
       require("mason-lspconfig").setup({
